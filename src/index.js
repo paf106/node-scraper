@@ -16,17 +16,17 @@ const checkPrice = async (page, priceLabel, productNameLabel) => {
   ; (async () => {
     // -------------
 
-    const data = await readCsvCore("./src/data/products.csv")
+    const data = await readCsvCore(CSV_FILE_PATH)
 
     const browser = await chromium.launch();
-    const page = await browser.newPage({ userAgent: USER_AGENT })
-
+    
     let productsTemp = []
-
+    
     for (const product of data) {
       const { vendor, url, id } = product
       console.log(`Checking ${vendor}...`)
-
+      
+      const page = await browser.newPage({ userAgent: USER_AGENT })
       await page.goto(url)
 
       let productToCheck = null
@@ -39,7 +39,7 @@ const checkPrice = async (page, priceLabel, productNameLabel) => {
 
       if (url.includes(EL_CORTE_INGLES)) productToCheck = await checkPrice(page, ".price", ".product_detail-title")
 
-      if (url.includes(PCCOMPONENTES)) productToCheck = await checkPrice(page, ".precioMain", ".h4")
+      if (url.includes(PCCOMPONENTES)) productToCheck = await checkPrice(page, ".h1", ".h4")
 
       if (url.includes(NIKE)) productToCheck = await checkPrice(page, ".product-price", "#pdp_product_title")
 
